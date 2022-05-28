@@ -71,20 +71,25 @@ vector<string> Macro::getMacroCalls(string sourceString)
 	return calls;
 }
 
-void Macro::getMacroStructure()
+string Macro::getMacro(string sourceString)
 {
-	Macro macro = Macro::data;
-	string sourceString = macro.data;
-	
-	string macroName = getMacroName(sourceString, "#", "(");
-
-	vector<string> macroCalls = getMacroCalls(sourceString);
-
-	cout << macroName << endl;
-	for (int i = 0; i < macroCalls.size(); i++) 
-		{
-			cout << macroCalls.at(i) << ' ' << endl;
-		}
-	cout << endl << endl;
-
+	return getMacroName(sourceString, "#", "(");
 }
+
+// void Macro::getMacroStructure()
+// {
+// 	Macro macro = Macro::data;
+// 	string sourceString = macro.data;
+	
+// 	string macroName = getMacroName(sourceString, "#", "(");
+
+// 	vector<string> macroCalls = getMacroCalls(sourceString);
+
+// 	cout << macroName << endl;
+// 	for (int i = 0; i < macroCalls.size(); i++) 
+// 		{
+// 			cout << macroCalls.at(i) << ' ' << endl;
+// 		}
+// 	cout << endl << endl;
+
+// }
