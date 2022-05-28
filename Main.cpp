@@ -7,6 +7,11 @@
 #include <sstream>
 
 using namespace std;
+struct MacroStruct
+{
+    string macroName;
+    vector<string> calls;
+};
 
 int main()
 {
@@ -20,10 +25,6 @@ int main()
     {
         Macro macro = macroSet[i];
 
-        macro.getMacroName();
-        // cout << macro.data << endl;
-
-        macro.getMacroCalls();
-
+        macro.getMacroStructure();
     }
 }

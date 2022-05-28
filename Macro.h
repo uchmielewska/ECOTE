@@ -12,6 +12,9 @@ public:
     Macro(string data);
 
     void getData();
-    void getMacroName();
-    void getMacroCalls();
+    string getMacroName(string sourceString, string symbolStart, string symbolEnd);
+    vector<string> getMacroCalls(string sourceString);
+    vector<int> getIndex(string sourceString, string s);
+    string getStringFrom(string sourceString, int position);
+    void getMacroStructure();
 };
