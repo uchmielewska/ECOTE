@@ -2,6 +2,7 @@
 #include "Macro.h"
 #include "FileReader.h"
 #include <sstream>
+#include<ctype.h>
 
 using namespace std;
 
@@ -17,7 +18,11 @@ void Macro::getData()
 
 string Macro::getMacroName(string sourceString, string symbolStart, string symbolEnd)
 {
-	unsigned first = sourceString.find(symbolStart) + 1;
+	int i = 1;
+	if(symbolStart == "")
+		i = 0;
+
+	unsigned first = sourceString.find(symbolStart) + i;
 	unsigned last = sourceString.find(symbolEnd);
 	string macroName = sourceString.substr(first, last-first);
 
@@ -73,23 +78,11 @@ vector<string> Macro::getMacroCalls(string sourceString)
 
 string Macro::getMacro(string sourceString)
 {
-	return getMacroName(sourceString, "#", "(");
+	if(sourceString[0] == '#')
+		return getMacroName(sourceString, "#", "(");
+	if(isalpha(sourceString[0]))
+		return getMacroName(sourceString, "", "(");	
+	else
+		return "";
 }
 
-// void Macro::getMacroStructure()
-// {
-// 	Macro macro = Macro::data;
-// 	string sourceString = macro.data;
-	
-// 	string macroName = getMacroName(sourceString, "#", "(");
-
-// 	vector<string> macroCalls = getMacroCalls(sourceString);
-
-// 	cout << macroName << endl;
-// 	for (int i = 0; i < macroCalls.size(); i++) 
-// 		{
-// 			cout << macroCalls.at(i) << ' ' << endl;
-// 		}
-// 	cout << endl << endl;
-
-// }

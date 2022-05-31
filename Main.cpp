@@ -6,15 +6,19 @@
 #include <vector>
 #include <sstream>
 #include <bits/stdc++.h>
-
 using namespace std;
+
 struct MacroStruct
 {
     string macroName;
     vector<string> calls;
 };
 
-vector<string> getMacroCalls(vector<MacroStruct> macroStructSet, string macroName)
+vector<string> notFinishedCalls;
+vector<MacroStruct> macroStructSet;
+
+
+vector<string> getMacroCalls(string macroName)
 {
     for (int i = 0; i < macroStructSet.size(); i++)
     { 
@@ -27,7 +31,8 @@ vector<string> getMacroCalls(vector<MacroStruct> macroStructSet, string macroNam
     return {};
 };
 
-void printSetOfStructures(vector<MacroStruct> macroStructSet)
+
+void printSetOfStructures()
 {
     for (int i = 0; i < macroStructSet.size(); i++)
     { 
@@ -35,24 +40,21 @@ void printSetOfStructures(vector<MacroStruct> macroStructSet)
         
         for (int j = 0; j < macroStructSet[i].calls.size(); j++) 
         {
-            cout << macroStructSet[i].calls.at(j) << ' ';
+            cout << macroStructSet[i].calls[j] << ' ';
         }
         cout << endl;
     }
 };
 
+
 bool areDuplicates(vector<string> notFinishedCalls)
 {
     vector<string> duplicate;
  
-    // STL function to sort the array of string
     sort(notFinishedCalls.begin(), notFinishedCalls.end());
  
     for (int i = 1; i < notFinishedCalls.size(); i++) {
         if (notFinishedCalls[i - 1] == notFinishedCalls[i]) {
- 
-            // STL function to push the duplicate
-            // notFinishedCalls in a new vector string
             if (duplicate.empty())
               duplicate.push_back(notFinishedCalls[i]);
             else if (notFinishedCalls[i] != duplicate.back())
@@ -66,48 +68,55 @@ bool areDuplicates(vector<string> notFinishedCalls)
         return true;
 }
 
-vector<string> iterateThroughMacroCalls(vector<MacroStruct> macroStructSet, string macroName, vector<string> notFinishedCalls, bool detected)
+
+bool iterateThroughMacroCalls(string macroName)
 {
-    vector<string> callsFromMacro = getMacroCalls(macroStructSet, macroName);
-
-    while(areDuplicates(notFinishedCalls) != true)
-    {
-        if(callsFromMacro.size() != 0 )
-        {
-            notFinishedCalls.push_back(macroName);
-
-            // if(areDuplicates(notFinishedCalls) == true)
-            // {
-            //     cout << "Infinite loop detected " << endl;
-            //     detected = true;
-            //     cout << detected << endl;
-            //     return detected;
-            // }
-
-            for(int i = 0; i < callsFromMacro.size(); i++)
-            {
-                iterateThroughMacroCalls(macroStructSet, callsFromMacro.at(i), notFinishedCalls, detected);
-            }
-        }
-        else
-        {
-            notFinishedCalls.pop_back();
-        }
-    }
+    vector<string> callsFromMacro = getMacroCalls(macroName);
+    notFinishedCalls.push_back(macroName);
     
-    return notFinishedCalls;
+    if(areDuplicates(notFinishedCalls) == 1)
+    {
+        return true;
+    }
+
+    for(int i = 0; i < callsFromMacro.size(); i++)
+    {
+        bool isInfiniteRecursion = iterateThroughMacroCalls(callsFromMacro[i]);
+
+        if(isInfiniteRecursion)
+            return true;
+    }
+  
+    notFinishedCalls.pop_back();
+    return false;
 };
+
+
+
+
 
 int main()
 {
     vector<Macro> macroSet;
-    vector<MacroStruct> macroStructSet;
-
+    
     FileReader fileReader = FileReader();
-
+    
     fileReader.readData(macroSet);
 
-    // prepate the set of structures
+    vector<string> macroNames;
+
+    // get macro names
+    for (int i = 0; i < macroSet.size(); i++)
+    {
+        Macro macro = macroSet[i];
+        macroNames.push_back(macro.getMacro(macro.data));
+        if(macroNames.back() == "")
+            macroNames.pop_back();
+
+        cout << macroNames.back() << endl;
+    }
+
+    // prepare the set of structures
     for (int i = 0; i < macroSet.size(); i++)
     {
         Macro macro = macroSet[i];
@@ -121,24 +130,19 @@ int main()
         macroStructSet.push_back(macroStruct);
     }
 
-    // print the set of structures
-    // printSetOfStructures(macroStructSet);
+    printSetOfStructures();
 
-
-    // // search for an infinite loop
-    // for (int i = 0; i < macroStructSet.size(); i++)
-    // { 
-
-    int i = 0;   
-    vector<string> notFinishedCalls;
-    bool detected = false;
-    vector<string> isInfinite = iterateThroughMacroCalls(macroStructSet, macroStructSet[i].macroName, notFinishedCalls, detected);
-
-    cout << "isInfinite: " << isInfinite.size() << endl;
-
-    for (int j = 0; j < isInfinite.size(); j++) 
+    // search for an infinite loop
+    for(int i = 0; i < macroStructSet.size(); i++)
     {
-        cout << isInfinite.at(j) << " ";
+        bool isInfiniteRecursion = iterateThroughMacroCalls(macroStructSet[i].macroName);
+
+        if(isInfiniteRecursion)
+        {
+            cout << "Infinite recursion detected" << endl;
+            return 0;
+        }
     }
 
+    cout << "No infinite recursion detected" << endl;
 }

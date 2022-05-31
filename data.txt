@@ -1,3 +1,4 @@
-#ONE( &1, &2) { ZUZIA &1 $TWO( TOMEK) &2}
+#ONE( &1, &2) { ZUZIA &1 $THREE( TOMEK) &2}
 #TWO( &1, &2) {ZUZIA &1 &2 $THREE( MAREK, &1) }
-#THREE( &1 ){ ZUZIA &1 $ONE( KRZYŚ, WITEK) $TWO( MAREK, &1 ) }
+#THREE( &1 ){ ZUZIA &1 $TWO( KRZYŚ, WITEK) $ONE( MAREK, &1 ) }
+3FOUR( ){ }
