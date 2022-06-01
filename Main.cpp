@@ -34,20 +34,27 @@ vector<string> getMacroCalls(string macroName)
 
 void printSetOfStructures()
 {
+    int emptyNames = 0;
     for (int i = 0; i < macroStructSet.size(); i++)
     { 
-        cout << macroStructSet[i].macroName << ": ";
+        if(macroStructSet[i].macroName == "")
+            emptyNames++;
+
+        // cout << macroStructSet[i].macroName << ": ";
         
-        for (int j = 0; j < macroStructSet[i].calls.size(); j++) 
-        {
-            cout << macroStructSet[i].calls[j] << ' ';
-        }
-        cout << endl;
+        // for (int j = 0; j < macroStructSet[i].calls.size(); j++) 
+        // {
+        //     cout << macroStructSet[i].calls[j] << ' ';
+        // }
+        // cout << endl;
+    }
+    if(emptyNames == macroStructSet.size()){
+        cout << "Error - no macro definitions names detected. Check syntax";
     }
 };
 
 
-bool areDuplicates(vector<string> notFinishedCalls)
+string areDuplicates(vector<string> notFinishedCalls)
 {
     vector<string> duplicate;
  
@@ -63,9 +70,9 @@ bool areDuplicates(vector<string> notFinishedCalls)
     }
  
     if (duplicate.size() == 0)
-        return false;
+        return "";
     else
-        return true;
+        return duplicate[0];
 }
 
 
@@ -73,9 +80,11 @@ bool iterateThroughMacroCalls(string macroName)
 {
     vector<string> callsFromMacro = getMacroCalls(macroName);
     notFinishedCalls.push_back(macroName);
-    
-    if(areDuplicates(notFinishedCalls) == 1)
+    string duplicatedMacroName = areDuplicates(notFinishedCalls);
+
+    if(duplicatedMacroName != "")
     {
+        cout << "Macro " << duplicatedMacroName << " - ";
         return true;
     }
 
@@ -105,17 +114,6 @@ int main()
 
     vector<string> macroNames;
 
-    // get macro names
-    for (int i = 0; i < macroSet.size(); i++)
-    {
-        Macro macro = macroSet[i];
-        macroNames.push_back(macro.getMacro(macro.data));
-        if(macroNames.back() == "")
-            macroNames.pop_back();
-
-        cout << macroNames.back() << endl;
-    }
-
     // prepare the set of structures
     for (int i = 0; i < macroSet.size(); i++)
     {
@@ -124,8 +122,21 @@ int main()
 
         string sourceString = macro.data;
 
-        macroStruct.macroName = macro.getMacro(sourceString);
-        macroStruct.calls = macro.getMacroCalls(sourceString);
+        macroNames.push_back(macro.getMacro(macro.data));
+
+        if(macroNames.back() != "")
+            macroStruct.macroName = macroNames.back();
+        else
+            macroNames.pop_back();
+    
+        if(macroNames.size() == 0)
+        {
+            cout << "Error - no macro definition detected. Check syntax" << endl;
+            return 0;
+        }       
+
+        if(macroStruct.macroName != "")
+            macroStruct.calls = macro.getMacroCalls(sourceString);
         
         macroStructSet.push_back(macroStruct);
     }
@@ -139,7 +150,7 @@ int main()
 
         if(isInfiniteRecursion)
         {
-            cout << "Infinite recursion detected" << endl;
+            cout << "infinite recursion detected" << endl;
             return 0;
         }
     }

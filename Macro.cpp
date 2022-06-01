@@ -1,8 +1,9 @@
 #include <vector>
-#include "Macro.h"
-#include "FileReader.h"
 #include <sstream>
 #include<ctype.h>
+#include<algorithm>
+#include "Macro.h"
+#include "FileReader.h"
 
 using namespace std;
 
@@ -58,6 +59,7 @@ string Macro::getStringFrom(string sourceString,int position)
 
 vector<string> Macro::getMacroCalls(string sourceString)
 {
+	remove(sourceString.begin(), sourceString.end(), ' ');
 	vector<int> callsIndexes = getIndex(sourceString, "$");
 	vector<string> callsSubstrings;
 
@@ -78,11 +80,48 @@ vector<string> Macro::getMacroCalls(string sourceString)
 
 string Macro::getMacro(string sourceString)
 {
-	if(sourceString[0] == '#')
-		return getMacroName(sourceString, "#", "(");
-	if(isalpha(sourceString[0]))
-		return getMacroName(sourceString, "", "(");	
+	remove(sourceString.begin(), sourceString.end(), ' ');
+	char firstItem = sourceString[0];
+
+	if(firstItem == '#')
+	{
+		string macroName = getMacroName(sourceString, "#", "(");	
+		string finalName;
+		for(int i = 0; i < macroName.size(); i++)
+		{
+			if(isalpha(macroName.at(i)) == true)
+			{
+				finalName.push_back(macroName.at(i));
+			}
+		}
+		return finalName;
+	}
+	else if(isalpha(firstItem))
+	{
+		string macroName = getMacroName(sourceString, "", "(");	
+
+		for(int i = 0; i < macroName.size(); i++)
+		{
+			if(isalpha(macroName.at(i)) == false)
+			{
+				return "";
+			}
+		}
+		return macroName;
+	}
 	else
-		return "";
+	{
+		string firstItemString(1, firstItem);
+		string macroName = getMacroName(sourceString, firstItemString, "(");
+
+		for(int i = 0; i < macroName.size(); i++)
+		{
+			if(isalpha(macroName.at(i)) == false)
+			{
+				return "";
+			}
+		}
+		return macroName;
+	}
 }
 

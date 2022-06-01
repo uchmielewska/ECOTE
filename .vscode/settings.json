@@ -5,6 +5,10 @@
         "string_view": "cpp",
         "initializer_list": "cpp",
         "utility": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "algorithm": "cpp",
+        "bitset": "cpp",
+        "regex": "cpp",
+        "valarray": "cpp"
     }
 }
