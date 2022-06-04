@@ -32,7 +32,7 @@ vector<string> getMacroCalls(string macroName)
 };
 
 
-void printSetOfStructures()
+int countFoundMacros()
 {
     int emptyNames = 0;
     for (int i = 0; i < macroStructSet.size(); i++)
@@ -40,17 +40,20 @@ void printSetOfStructures()
         if(macroStructSet[i].macroName == "")
             emptyNames++;
 
-        // cout << macroStructSet[i].macroName << ": ";
+        cout << macroStructSet[i].macroName << ": ";
         
-        // for (int j = 0; j < macroStructSet[i].calls.size(); j++) 
-        // {
-        //     cout << macroStructSet[i].calls[j] << ' ';
-        // }
-        // cout << endl;
+        for (int j = 0; j < macroStructSet[i].calls.size(); j++) 
+        {
+            cout << macroStructSet[i].calls[j] << ' ';
+        }
+        cout << endl;
     }
     if(emptyNames == macroStructSet.size()){
-        cout << "Error - no macro definitions names detected. Check syntax";
+        cout << "Error - no macro definitions names detected. Check syntax" << endl;
+        return 0;
     }
+
+    return 1;
 };
 
 
@@ -100,7 +103,29 @@ bool iterateThroughMacroCalls(string macroName)
     return false;
 };
 
+vector<string> getMacroNamesSet()
+{
+	vector<Macro> macroSet;
 
+    FileReader fileReader = FileReader();
+    fileReader.readData(macroSet);
+
+	vector<string> macroNamesSet;
+    
+	for (int i = 0; i < macroSet.size(); i++)
+    {
+        Macro macro = macroSet[i];
+    
+        string sourceString = macro.data;
+        string macroName = macro.getMacro(macro.data);
+
+        if(macroName != "")
+            macroNamesSet.push_back(macroName);
+
+    }
+
+	return macroNamesSet;
+}
 
 
 
@@ -111,6 +136,9 @@ int main()
     FileReader fileReader = FileReader();
     
     fileReader.readData(macroSet);
+
+    // prepare the set of macro definition names
+    vector<string> macroNamesSet = getMacroNamesSet();
 
     vector<string> macroNames;
 
@@ -127,21 +155,19 @@ int main()
         if(macroNames.back() != "")
             macroStruct.macroName = macroNames.back();
         else
-            macroNames.pop_back();
-    
-        if(macroNames.size() == 0)
-        {
-            cout << "Error - no macro definition detected. Check syntax" << endl;
-            return 0;
-        }       
+            macroNames.pop_back(); 
 
         if(macroStruct.macroName != "")
-            macroStruct.calls = macro.getMacroCalls(sourceString);
-        
-        macroStructSet.push_back(macroStruct);
+        {
+            macroStruct.calls = macro.getMacroCallsFromString(sourceString, macroNamesSet);
+            macroStructSet.push_back(macroStruct);
+        }   
+        else
+            cout << "Row " << i+1 << " - no macro definition detected. Check syntax" << endl << endl;
     }
 
-    printSetOfStructures();
+    if(countFoundMacros() == 0)
+        return 0;
 
     // search for an infinite loop
     for(int i = 0; i < macroStructSet.size(); i++)

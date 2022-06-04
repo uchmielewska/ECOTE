@@ -12,11 +12,6 @@ Macro::Macro(string data)
 	Macro::data = data;
 }
 
-void Macro::getData()
-{
-	cout << Macro::data;
-}
-
 string Macro::getMacroName(string sourceString, string symbolStart, string symbolEnd)
 {
 	int i = 1;
@@ -30,52 +25,23 @@ string Macro::getMacroName(string sourceString, string symbolStart, string symbo
 	return macroName;
 }
 
-vector<int> Macro::getIndex(string sourceString, string s)
-{
-    bool flag = false;
-	vector<int> foundIndexes;
-
-    for (int i = 0; i < sourceString.length(); i++) 
-	{
-        if (sourceString.substr(i, s.length()) == s) 
-		{
-            flag = true;
-			foundIndexes.push_back(i);
-        }
-    }
- 
-    if (flag == false)
-		return {};
-
-	return foundIndexes;
-}
-
-string Macro::getStringFrom(string sourceString,int position)
-{
-	string subString = sourceString.substr(position);
-	return subString;
-}
-
-
-vector<string> Macro::getMacroCalls(string sourceString)
+vector<string> Macro::getMacroCallsFromString(string sourceString, vector<string> macroNames)
 {
 	remove(sourceString.begin(), sourceString.end(), ' ');
-	vector<int> callsIndexes = getIndex(sourceString, "$");
-	vector<string> callsSubstrings;
+	vector<string> foundCalls;
 
-	for (int i = 0; i < callsIndexes.size(); i++)
+	for(int i = 0; i < macroNames.size(); i++)
 	{
-		callsSubstrings.push_back(getStringFrom(sourceString, callsIndexes.at(i)));
+    	size_t found = sourceString.find(macroNames[i]);
+
+		if(found == 0 || found == 1)
+			found = sourceString.find(macroNames[i], found+1);
+
+		if (found != string::npos)
+			foundCalls.push_back(macroNames[i]);
 	}
-
-	vector<string> calls;
-
-	for (int i = 0; i < callsSubstrings.size(); i++) 
-	{
-     	calls.push_back(getMacroName(callsSubstrings.at(i), "$", "("));
-    }
-
-	return calls;
+	
+	return foundCalls;
 }
 
 string Macro::getMacro(string sourceString)
@@ -95,6 +61,10 @@ string Macro::getMacro(string sourceString)
 			}
 		}
 		return finalName;
+	}
+	if(firstItem == '$')
+	{
+		return "";
 	}
 	else if(isalpha(firstItem))
 	{
@@ -124,4 +94,3 @@ string Macro::getMacro(string sourceString)
 		return macroName;
 	}
 }
-
