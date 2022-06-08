@@ -39,14 +39,6 @@ int countFoundMacros()
     { 
         if(macroStructSet[i].macroName == "")
             emptyNames++;
-
-        cout << macroStructSet[i].macroName << ": ";
-        
-        for (int j = 0; j < macroStructSet[i].calls.size(); j++) 
-        {
-            cout << macroStructSet[i].calls[j] << ' ';
-        }
-        cout << endl;
     }
     if(emptyNames == macroStructSet.size()){
         cout << "Error - no macro definitions names detected. Check syntax" << endl;

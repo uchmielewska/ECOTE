@@ -14,5 +14,4 @@ public:
     string getMacroName(string sourceString, string symbolStart, string symbolEnd);
     vector<string> getMacroCallsFromString(string sourceString, vector<string> macroNames);
     string getMacro(string sourceString);
-    string removeSpaces(string sourceString);
 };

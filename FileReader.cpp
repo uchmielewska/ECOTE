@@ -20,7 +20,6 @@ void FileReader::readData(vector<Macro> &macroSet)
 
     string line, element;
 
-    //założenie: definicje zaczynają się od nowej lini - w dokumentacji napisać
     while (getline(file, line))
     {
         Macro macro = Macro(line);
